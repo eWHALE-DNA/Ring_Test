@@ -1,0 +1,502 @@
+---
+title: "Ring Test Plots"
+output: html_notebook
+---
+
+Libraries
+```{r}
+library(dplyr)
+library(ggplot2)
+library(viridis)
+library(reshape2)
+library(reshape2)
+library(dunn.test)
+
+```
+
+Figure 2. Qubit boxplots for UIBK samples
+```{r}
+uibk <- read.csv("qubit_uibk_jan21.csv")
+ggplot(uibk, aes(x = as.factor(Number), y = ng.ul)) +
+  geom_boxplot() + # Boxplot for each sample number
+  geom_point(aes(color = Org), position = position_jitter(width = 0.2), size = 2.5) + # Points colored by lab, slightly jittered
+  theme_minimal() +
+  scale_color_manual(values = custom_colors) +
+  labs(x = "", 
+       y = "",
+       color = "Lab") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14), # Increase x-axis text size
+        axis.text.y = element_text(size = 14), # Increase y-axis text size
+        axis.title.x = element_text(size = 16), # Increase x-axis title size
+        axis.title.y = element_text(size = 16), # Increase y-axis title size
+        legend.title = element_text(size = 14), # Increase legend title size
+        legend.text = element_text(size = 14)) # Increase legend text size
+
+```
+Figure 2. Qubit boxplots for INRAE samples
+```{r}
+inrae <- read.csv("qubit_inrae_jan24.csv")
+ggplot(inrae, aes(x = as.factor(Number), y = ng.ul)) +
+  geom_boxplot() + # Boxplot for each sample number
+  geom_point(aes(color = Org), position = position_jitter(width = 0.2), size = 2.5) + # Points colored by lab, slightly jittered
+  theme_minimal() +
+  scale_color_manual(values = custom_colors) +
+  labs(x = "", 
+       y = "",
+       color = "Lab") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14), # Increase x-axis text size
+        axis.text.y = element_text(size = 14), # Increase y-axis text size
+        axis.title.x = element_text(size = 16), # Increase x-axis title size
+        axis.title.y = element_text(size = 16), # Increase y-axis title size
+        legend.title = element_text(size = 14), # Increase legend title size
+        legend.text = element_text(size = 14)) # Increase legend text size
+
+```
+Figure 2. Qubit boxplots for UCC samples
+```{r}
+ucc <- read.csv("qubit_ucc_feb4.csv")
+ggplot(ucc, aes(x = as.factor(Number), y = ng.ul)) +
+  geom_boxplot() + # Boxplot for each sample number
+  geom_point(aes(color = Org), position = position_jitter(width = 0.2), size = 2.5) + # Points colored by lab, slightly jittered
+  theme_minimal() +
+  scale_color_manual(values = custom_colors) +
+  labs(x = "", 
+       y = "",
+       color = "Lab") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14), # Increase x-axis text size
+        axis.text.y = element_text(size = 14), # Increase y-axis text size
+        axis.title.x = element_text(size = 16), # Increase x-axis title size
+        axis.title.y = element_text(size = 16), # Increase y-axis title size
+        legend.title = element_text(size = 14), # Increase legend title size
+        legend.text = element_text(size = 14)) # Increase legend text size
+
+```
+
+Figure 2. Qubit boxplots for IMR samples
+```{r}
+imr <- read.csv("qubit_imr_jan19.csv")
+ggplot(imr, aes(x = as.factor(Number), y = ng.ul)) +
+  geom_boxplot() + # Boxplot for each sample number
+  geom_point(aes(color = Org), position = position_jitter(width = 0.2), size = 2.5) + # Points colored by lab, slightly jittered
+  theme_minimal() +
+  scale_color_manual(values = custom_colors) +
+  labs(x = "", 
+       y = "",
+       color = "Lab") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14), # Increase x-axis text size
+        axis.text.y = element_text(size = 14), # Increase y-axis text size
+        axis.title.x = element_text(size = 16), # Increase x-axis title size
+        axis.title.y = element_text(size = 16), # Increase y-axis title size
+        legend.title = element_text(size = 14), # Increase legend title size
+        legend.text = element_text(size = 14)) # Increase legend text size
+
+```
+Figure 3. Ct values and Limit of Detection for dilution series and eDNA extracts (UIBK)
+```{r}
+df <- read.csv("UIBK_data_qpcr.csv")
+
+df$Sample <- factor(df$Sample, levels = c("SW1", "SW2", "SW3", "SW4", "SW5", "SW6", "SW7", "SW8", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"))
+
+df$Ct <- as.numeric(as.character(df$Ct))
+
+custom_colors <- c("#E69F00", "#56B4E9", "#009E73", "#CC79A7")
+ggplot(df, aes(x = Sample, y = Ct, color = Lab, shape = Sample.type)) +
+  geom_point(aes(color = Lab), size = 2.5) + # Thick black line at Ct=40
+  geom_hline(yintercept = 35.5, linetype = "dotted", color = "blue", size = 1) +
+  #geom_hline(yintercept = 31.5, linetype = "dotted", color = "orange4", size = 1) + # Dotted blue line at Ct=32# Dotted blue line at Ct=33 + 
+# Dotted blue line at Ct=36 + 
+  scale_y_continuous(breaks = seq(20, max(df$Ct, na.rm = TRUE) + 2, by = 2)) + # Adjust y-axis intervals
+  scale_x_discrete(limits = levels(df$Sample)) + # Ensure the reordering is applied
+  theme_minimal() +
+  scale_color_manual(values = custom_colors) +
+  labs(x = " ", y = " ",
+       color = "Laboratory / 
+       Extraction Method", # Custom title for the color legend
+       shape = "Type of Sample") +
+   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14), # Increase x-axis text size
+        axis.text.y = element_text(size = 14), # Increase y-axis text size
+        axis.title.x = element_text(size = 16), # Increase x-axis title size
+        axis.title.y = element_text(size = 16), # Increase y-axis title size
+        legend.title = element_text(size = 14), # Increase legend title size
+        legend.text = element_text(size = 14)) # Increase legend text size
+
+```
+
+Figure 3. Ct values and Limit of Detection for dilution series and eDNA extracts (INRAE)
+```{r}
+df <- read.csv("INRAE_data_qpcr.csv")
+
+df$Sample <- factor(df$Sample, levels = c("P1", "P2", "P3", "P4", "P5", "P6", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"))
+
+df$Ct <- as.numeric(as.character(df$Ct))
+custom_colors <- c("#E69F00", "#56B4E9", "#009E73", "#CC79A7")
+
+ggplot(df, aes(x = Sample, y = Ct, color = Lab, shape = Sample.type)) +
+  geom_point(aes(color = Lab), size = 2.5) + # Thick black line at Ct=40
+  geom_hline(yintercept = 35.9, linetype = "dotted", color = "blue", size = 1) +
+  #geom_hline(yintercept = 31.5, linetype = "dotted", color = "orange4", size = 1) + # Dotted blue line at Ct=32# Dotted blue line at Ct=33 + 
+# Dotted blue line at Ct=36 + 
+  scale_y_continuous(breaks = seq(20, max(df$Ct, na.rm = TRUE) + 2, by = 2)) + # Adjust y-axis intervals
+  scale_x_discrete(limits = levels(df$Sample)) + # Ensure the reordering is applied
+  theme_minimal() +
+  scale_color_manual(values = custom_colors) +
+  labs(x = " ", y = " ",
+       color = "Laboratory / 
+       Extraction Method", # Custom title for the color legend
+       shape = "Type of Sample") +
+   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14), # Increase x-axis text size
+        axis.text.y = element_text(size = 14), # Increase y-axis text size
+        axis.title.x = element_text(size = 16), # Increase x-axis title size
+        axis.title.y = element_text(size = 16), # Increase y-axis title size
+        legend.title = element_text(size = 14), # Increase legend title size
+        legend.text = element_text(size = 14)) # Increase legend text size
+
+
+```
+
+Figure 3. Ct values and Limit of Detection for dilution series and eDNA extracts (UCC)
+```{r}
+df <- read.csv("UCC_data_qpcr.csv")
+
+df$Sample <- factor(df$Sample, levels = c("BD1", "BD2", "BD3", "BD4", "BD5", "BD6", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"))
+
+df$Ct <- as.numeric(as.character(df$Ct))
+custom_colors <- c("#E69F00", "#56B4E9", "#009E73", "#CC79A7")
+
+ggplot(df, aes(x = Sample, y = Ct, color = Lab, shape = Sample.type)) +
+  geom_point(aes(color = Lab), size = 2.5) + # Thick black line at Ct=40
+  geom_hline(yintercept = 36, linetype = "dotted", color = "blue", size = 1) +
+  #geom_hline(yintercept = 31.5, linetype = "dotted", color = "orange4", size = 1) + # Dotted blue line at Ct=32# Dotted blue line at Ct=33 + 
+# Dotted blue line at Ct=36 + 
+  scale_y_continuous(breaks = seq(20, max(df$Ct, na.rm = TRUE) + 2, by = 2)) + # Adjust y-axis intervals
+  scale_x_discrete(limits = levels(df$Sample)) + # Ensure the reordering is applied
+  theme_minimal() +
+  scale_color_manual(values = custom_colors) +
+  labs(x = " ", y = " ",
+       color = "Laboratory / 
+       Extraction Method", # Custom title for the color legend
+       shape = "Type of Sample") +
+   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14), # Increase x-axis text size
+        axis.text.y = element_text(size = 14), # Increase y-axis text size
+        axis.title.x = element_text(size = 16), # Increase x-axis title size
+        axis.title.y = element_text(size = 16), # Increase y-axis title size
+        legend.title = element_text(size = 14), # Increase legend title size
+        legend.text = element_text(size = 14)) # Increase legend text size
+
+```
+
+Figure 3. Ct values and Limit of Detection for dilution series and eDNA extracts (IMR)
+```{r}
+
+df <- read.csv("IMR_data_qpcr.csv")
+
+df$Sample <- factor(df$Sample, levels = c("B1", "B2", "B3", "B4", "B5", "B6", "32", "33", "34", "35", "36", "37", "38", "39"))
+
+df$Ct <- as.numeric(as.character(df$Ct))
+custom_colors <- c("#E69F00", "#56B4E9", "#009E73", "#CC79A7")
+
+ggplot(df, aes(x = Sample, y = Ct, color = Lab, shape = Sample.type)) +
+  geom_point(aes(color = Lab), size = 2.5) + 
+  geom_hline(yintercept = 35.3, linetype = "dotted", color = "blue", size = 1) +
+  scale_y_continuous(breaks = seq(20, max(df$Ct, na.rm = TRUE) + 2, by = 2)) + 
+  scale_x_discrete(limits = levels(df$Sample)) + 
+  theme_minimal() +
+  scale_color_manual(values = custom_colors) +
+  labs(x = " ", y = " ",
+       color = "Laboratory / 
+       Extraction Method", # Custom title for the color legend
+       shape = "Type of Sample") +
+   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14), # Increase x-axis text size
+        axis.text.y = element_text(size = 14), # Increase y-axis text size
+        axis.title.x = element_text(size = 16), # Increase x-axis title size
+        axis.title.y = element_text(size = 16), # Increase y-axis title size
+        legend.title = element_text(size = 14), # Increase legend title size
+        legend.text = element_text(size = 14)) # Increase legend text size
+
+```
+
+Figure 4A. qPCR heatmap with all positive amplifications
+```{r}
+data <- read.csv("heatmap_All_Positive_Amplifications.csv")
+
+data$Replicate <- factor(data$Replicate, levels = c("A", "B", "C"))  
+data$LabReplicate <- paste(data$Lab, data$Replicate, sep = "_")
+data$Unique <- as.numeric(data$Unique)
+data <- data %>% mutate(CtAdjusted = ifelse(Ct == 0, NA, Ct))
+data <- data %>%
+  group_by(Lab) %>%
+  mutate(LabPosition = mean(as.numeric(factor(LabReplicate)))) %>%
+  ungroup()
+
+data$LabReplicate <- factor(data$LabReplicate, levels = c("UIBK_A", "UIBK_B", "UIBK_C", "INRAE_A", "INRAE_B", "INRAE_C", "UCC_A", "UCC_B", "UCC_C", "IMR_A", "IMR_B", "IMR_C"))
+
+ggplot(data, aes(x = LabReplicate, y = Unique, fill = CtAdjusted)) + 
+  geom_tile(color = "grey", linewidth = 0.2) +
+  scale_fill_gradientn(colors = c("white", "darkblue", "lightblue"),
+                       values = rescale(c(NA, 10, max(data$Ct, na.rm = TRUE))), 
+                       na.value = "white", 
+                       guide = "colourbar") +
+  theme_minimal() +
+  labs(fill = "Ct", 
+       x = "", 
+       y = "") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(breaks = seq(from = 0, to =40, by = 5)) + 
+  scale_x_discrete(limits = levels(data$LabReplicate))
+
+```
+Figure 4B. qPCR heatmap with positive amplifications at or below the respective assay's LOD
+```{r}
+data <- read.csv("lod-ct.csv")
+data$Replicate <- factor(data$Replicate, levels = c("A", "B", "C"))  
+data$LabReplicate <- paste(data$Lab, data$Replicate, sep = "_")
+data$Unique <- as.numeric(data$Unique)
+data <- data %>% mutate(CtAdjusted = ifelse(Ct == 0, NA, Ct))
+
+data <- data %>%
+  group_by(Lab) %>%
+  mutate(LabPosition = mean(as.numeric(factor(LabReplicate)))) %>%
+  ungroup()
+
+
+data$LabReplicate <- factor(data$LabReplicate, levels = c("UIBK_A", "UIBK_B", "UIBK_C", "INRAE_A", "INRAE_B", "INRAE_C", "UCC_A", "UCC_B", "UCC_C", "IMR_A", "IMR_B", "IMR_C"))
+
+ggplot(data, aes(x = LabReplicate, y = Unique, fill = CtAdjusted)) + 
+  geom_tile(color = "grey", linewidth = 0.2) +
+  scale_fill_gradientn(colors = c("white", "darkblue", "lightblue"),
+                       values = rescale(c(NA, 10, max(data$Ct, na.rm = TRUE))), 
+                       na.value = "white", 
+                       guide = "colourbar") +
+  theme_minimal() +
+  labs(fill = "Ct", 
+       x = "", 
+       y = "") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(breaks = seq(from = 0, to =40, by = 5)) + 
+  scale_x_discrete(limits = levels(data$LabReplicate))
+
+```
+Supplementary Figure 1
+```{r}
+ggplot(uibk, aes(x = as.factor(Number), y = ng.ul)) + 
+  geom_boxplot(aes(fill = Org), outlier.shape = NA) + 
+  geom_jitter(position = position_jitter(width = 0.2), size = 1) +
+  labs(x = "Sample", y = "DNA Concentration") +
+  scale_fill_manual(values = c("UIBK" = "#cc79a7", "UCC" = "#009e73", "INRAE" = "#e69f00", "IMR" = "#0072b2")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  facet_grid(rows = vars(Org), scales = "free", space = "free") +
+  theme(strip.background = element_blank(), strip.text.y = element_text(size = 12, face = "bold")) + ylim(0, 6)
+```
+
+Supplementary Figure 1
+```{r}
+ggplot(inrae, aes(x = as.factor(Number), y = ng.ul)) + 
+  geom_boxplot(aes(fill = Org), outlier.shape = NA) + 
+  geom_jitter(position = position_jitter(width = 0.2), size = 1) +
+  labs(x = "Sample", y = "DNA Concentration") +
+  scale_fill_manual(values = c("UIBK" = "#cc79a7", "UCC" = "#009e73", "INRAE" = "#e69f00", "IMR" = "#0072b2")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  facet_grid(rows = vars(Org), scales = "free", space = "free") +
+  theme(strip.background = element_blank(), strip.text.y = element_text(size = 12, face = "bold")) + ylim(0, 6)
+```
+Supplementary Figure 1
+```{r}
+ggplot(ucc, aes(x = as.factor(Number), y = ng.ul)) + 
+  geom_boxplot(aes(fill = Org), outlier.shape = NA) + 
+  geom_jitter(position = position_jitter(width = 0.2), size = 1) +
+  labs(x = "Sample", y = "DNA Concentration") +
+  scale_fill_manual(values = c("UIBK" = "#cc79a7", "UCC" = "#009e73", "INRAE" = "#e69f00", "IMR" = "#0072b2")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  facet_grid(rows = vars(Org), scales = "free", space = "free") +
+  theme(strip.background = element_blank(), strip.text.y = element_text(size = 12, face = "bold")) + ylim(0, 6)
+```
+Supplementary Figure 1
+```{r}
+ggplot(imr, aes(x = as.factor(Number), y = ng.ul)) + 
+  geom_boxplot(aes(fill = Org), outlier.shape = NA) + 
+  geom_jitter(position = position_jitter(width = 0.2), size = 1) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +  
+  labs(x = "Sample", y = "DNA Concentration") +
+  scale_fill_manual(values = c("UIBK" = "#cc79a7", "UCC" = "#009e73", "INRAE" = "#e69f00", "IMR" = "#0072b2")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  facet_grid(rows = vars(Org), scales = "free", space = "free") +
+  theme(strip.background = element_blank(), strip.text.y = element_text(size = 12, face = "bold")) + 
+  ylim(0, 18)
+```
+
+Supplementary Figure 2A
+```{r}
+custom_palette <- c("skyblue", "orange", "darkgreen", "#B63679FF", "grey50")
+
+ggplot(data = data, aes(x = Target, y = Ct)) +
+  geom_boxplot(data = subset(data, Ct != 0), outlier.shape = NA, color = "black") +
+  geom_jitter(aes(color = Lab), width = 0.2) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "") +
+  theme(legend.position = "right",
+        axis.title = element_text(size = 20),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14),
+        axis.text = element_text(size = 10)) +
+  scale_color_manual(values = custom_palette) 
+
+```
+
+Supplementary Figure 2B
+```{r}
+d <- read.csv("lod-ct.csv")
+ggplot(data = d, aes(x = Target, y = Ct)) +
+  geom_boxplot(data = subset(d, Ct != 0), outlier.shape = NA) +
+  geom_jitter(aes(color = Lab), width = 0.2) +
+  theme_minimal() +
+  labs(title = "", x = "", y = "") +
+  theme(legend.position = "right",
+        axis.title = element_text(size = 20),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14),
+        axis.text = element_text(size = 10)) +
+  scale_color_manual(values = custom_palette) 
+
+```
+Statistical Analysis(All data)
+```{r}
+a <- read.csv("heatmap_All_Positive_Amplifications.csv")
+
+atable <- table(a$Lab, a$Detect)
+atable
+chisq.test(atable)
+std_residuals <- chisq.test(atable)$stdres
+residual_table <- as.data.frame(std_residuals)
+names(residual_table) <- c("Residuals")
+rownames(residual_table) <- apply(expand.grid(rownames(table), colnames(table)), 1, paste, collapse = " in ")
+
+# Print residuals to identify significant deviations
+print(residual_table)
+```
+
+```{r}
+chi_sq_value <- chisq.test(table)$statistic
+N <- sum(table)
+for (i in 1:(nrow(table) - 1)) {
+  for (j in (i + 1):nrow(table)) {
+    prop_diff <- abs(prop.table(table)[i, 2] - prop.table(table)[j, 2])
+    crit_value <- sqrt((chi_sq_value / N) * (1 / sum(table[i, ]) + 1 / sum(table[j, ])))
+    print(c(paste("Comparison between", rownames(table)[i], "and", rownames(table)[j]), prop_diff > crit_value))
+  }
+}
+```
+
+```{r}
+all <- read.csv("heatmap_All_Positive_Amplifications.csv")
+
+data_posive <- subset(all, Detect == "Y")
+
+shapiro.test(data_positive$Ct)
+hist(data_positive$Ct, main = "Histogram of Ct Values", xlab = "Ct", breaks = 30, col = "blue")
+
+# Q-Q Plot
+qqnorm(data_positive$Ct)
+qqline(data_positive$Ct, col = "red")
+library(car)
+leveneTest(Ct ~ Lab, data = data_positive)
+
+results <- data_positive %>%
+  group_by(Target) %>%
+  do({
+    anova_result <- aov(Ct ~ Lab, data = .)
+    summary_df <- summary(anova_result)
+    p_value <- summary_df[[1]][["Pr(>F)"]][1]
+    data.frame(
+      Target = unique(.$Target),
+      P_Value = p_value,
+      Summary = I(list(summary_df))
+    )
+  })
+
+# View the results
+print(results)
+install.packages("multcomp")
+
+library(multcomp)
+tukey_res <- glht(anova_result, linfct = mcp(Lab = "Tukey"))
+summary(tukey_res)
+
+kruskal_test_result <- kruskal.test(Ct ~ Lab, data = data_positive)
+print(kruskal_test_result)
+
+anova_result <- aov(Ct ~ Lab, data = data_positive)
+print(anova_result)
+
+library(dunn.test)
+
+# Dunn's Test for multiple comparisons
+dunn_result <- dunn.test(data_positive$Ct, data_positive$Lab, method = "bonferroni")
+print(dunn_result)
+
+dunn_data <- data.frame(
+  Comparison = rownames(dunn_result$comparisons),
+  Z_value = dunn_result$comparisons[, ""],
+  P_value = dunn_result$comparisons[, "P"],
+  Adjusted_P_value = dunn_result$comparisons[, "P.adjusted"]
+)
+```
+
+Statistical Analysis (At or Below assay LOD)
+```{r}
+lod <- read.csv("lod-ct.csv")
+
+data_pos_lod <- subset(lod, Detect == "Y")
+
+shapiro.test(data_pos_lod$Ct)
+hist(data_pos_lod$Ct, main = "Histogram of Ct Values", xlab = "Ct", breaks = 30, col = "blue")
+
+# Q-Q Plot
+qqnorm(data_positive$Ct)
+qqline(data_positive$Ct, col = "red")
+library(car)
+leveneTest(Ct ~ Lab, data = data_positive)
+
+results <- data_positive %>%
+  group_by(Target) %>%
+  do({
+    anova_result <- aov(Ct ~ Lab, data = .)
+    summary_df <- summary(anova_result)
+    p_value <- summary_df[[1]][["Pr(>F)"]][1]
+    data.frame(
+      Target = unique(.$Target),
+      P_Value = p_value,
+      Summary = I(list(summary_df))
+    )
+  })
+
+# View the results
+print(results)
+install.packages("multcomp")
+
+library(multcomp)
+tukey_res <- glht(anova_result, linfct = mcp(Lab = "Tukey"))
+summary(tukey_res)
+
+kruskal_test_result <- kruskal.test(Ct ~ Lab, data = data_pos_lod)
+print(kruskal_test_result)
+
+anova_result <- aov(Ct ~ Lab, data = data_pos_lod)
+print(anova_result)
+
+
+# Dunn's Test for multiple comparisons
+dunn_result <- dunn.test(data_pos_lod$Ct, data_pos_lod$Lab, method = "bonferroni")
+print(dunn_result)
+
+dunn_data <- data.frame(
+  Comparison = rownames(dunn_result$comparisons),
+  Z_value = dunn_result$comparisons[, ""],
+  P_value = dunn_result$comparisons[, "P"],
+  Adjusted_P_value = dunn_result$comparisons[, "P.adjusted"]
+)
+```
+
