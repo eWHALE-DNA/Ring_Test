@@ -1,9 +1,7 @@
 # Overview
 
-This repository contains the code used in the analysis of data associated with the manuscript titled Inter-laboratory ring test for environmental DNA extraction protocols: implications for marine megafauna detection using three novel qPCR assays. The code is used to analyze total DNA quantification via Qubit, species-specific qPCR data, and statistical comparisons between different DNA extraction techniques across multiple labs. 
+This repository contains the bioinformatics workflows used in the eWHALE project across project partners to analyze metabarcoding data produced by high-throughput sequencing of various target regions (12S, 16S, COI, 18S). 
 
 # Data Availability 
 
-The dataset used in this study, including qPCR Ct values, total DNA concentrations, and metadata, is publicly available via the supplementary information of the associated publication. 
-If you use or modify this code, please cite the associated publication: 
-Rodriguez et al. (2024) Inter-laboratory ring test for environmental DNA extraction protocols: implications for marine megafauna detection using three novel qPCR assays. Metabarcoding and Metagenomics, in prep. 
+Metabarcoding labwork is currently underway and therefore, there is no publishable data yet. When available, raw sequencing data and associated metadata will be uploaded to an open-access repository (GenBank & Figshare) and linked here. 
